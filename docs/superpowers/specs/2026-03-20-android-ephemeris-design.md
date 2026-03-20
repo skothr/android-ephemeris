@@ -73,7 +73,7 @@ User scrubs controls
 
 - `swisseph_wrapper.c` — JNI functions calling Swiss Ephemeris C API (`swe_calc_ut`, `swe_houses`, `swe_set_ephe_path`, etc.)
 - Swiss Ephemeris source files compiled via CMake in the NDK build
-- Ephemeris data files (`.se1`) bundled in `assets/` and extracted to app-internal storage on first launch
+- Ephemeris data files (`.se1`) bundled in `assets/` and extracted to app-internal storage on first launch. Include files covering 1800–2400 CE (covers historical charts and far-future transits; ~10MB)
 
 ### Kotlin API
 
@@ -101,7 +101,7 @@ User scrubs controls
 | `CelestialBody` | Enum: Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, Chiron, NorthNode, Lilith |
 | `ZodiacSign` | Enum with degree ranges, element (Fire/Earth/Air/Water), modality (Cardinal/Fixed/Mutable) |
 | `HouseSystem` | Enum: Placidus, WholeSign, Equal, Koch |
-| `Aspect` | Enum: Conjunction(0), Opposition(180), Trine(120), Square(90), Sextile(60), Quincunx(150), SemiSextile(30), SemiSquare(45), Sesquiquadrate(135) — each with default orb |
+| `Aspect` | Enum: Conjunction(0, orb 8°), Opposition(180, 8°), Trine(120, 8°), Square(90, 7°), Sextile(60, 6°), Quincunx(150, 3°), SemiSextile(30, 2°), SemiSquare(45, 2°), Sesquiquadrate(135, 2°) |
 | `CelestialPosition` | longitude, latitude, distance, speed, retrograde flag |
 | `AspectResult` | body1, body2, aspect type, exact angle, current orb, applying/separating |
 | `HouseData` | 12 cusps + ASC/MC/DSC/IC angles |
@@ -174,7 +174,7 @@ No explicit animation needed. When date/time changes, ChartData recalculates and
 
 - **City search** — text field with autocomplete dropdown. Bundled GeoNames cities15000 database (~25k cities, ~2MB) for offline use.
 - **Raw coordinates** — lat/lon fields with same drag-to-scrub behavior as time fields. Tap to type exact values.
-- **Timezone** — auto-resolved from coordinates, displayed but not directly editable (derived from location)
+- **Timezone** — auto-resolved from coordinates using Android's `TimeZone` API with `java.time.ZoneId` for modern tz support. Displayed but not directly editable (derived from location).
 
 ### ViewModel Integration
 
