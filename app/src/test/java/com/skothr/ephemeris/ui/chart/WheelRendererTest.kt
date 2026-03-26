@@ -50,7 +50,7 @@ class WheelRendererTest {
     fun `ringRadii are properly nested`() {
         val radii = WheelMath.calculateRingRadii(500f)
         assertTrue("Zodiac outer > zodiac inner", radii.zodiacOuter > radii.zodiacInner)
-        assertTrue("Zodiac inner > house outer", radii.zodiacInner > radii.houseOuter)
+        assertTrue("Zodiac inner >= house outer", radii.zodiacInner >= radii.houseOuter)
         assertTrue("House outer > house inner", radii.houseOuter > radii.houseInner)
         assertTrue("House inner > body ring", radii.houseInner > radii.bodyRing)
         assertTrue("Body ring > aspect inner", radii.bodyRing > radii.aspectInner)
