@@ -6,6 +6,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.util.Log
 import java.io.File
 
 class EphemerisApp : Application() {
@@ -16,9 +17,14 @@ class EphemerisApp : Application() {
     override fun onCreate() {
         super.onCreate()
         CoroutineScope(Dispatchers.IO).launch {
-            val ephePath = extractEphemerisData()
-            swissEphemeris.init(ephePath)
-            ephemerisReady.complete(Unit)
+            try {
+                val ephePath = extractEphemerisData()
+                swissEphemeris.init(ephePath)
+                ephemerisReady.complete(Unit)
+            } catch (e: Exception) {
+                Log.e("EphemerisApp", "Failed to initialize ephemeris", e)
+                ephemerisReady.completeExceptionally(e)
+            }
         }
     }
 

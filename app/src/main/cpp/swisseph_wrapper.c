@@ -10,6 +10,10 @@ JNIEXPORT void JNICALL
 Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeInit(
     JNIEnv *env, jobject thiz, jstring ephe_path) {
     const char *path = (*env)->GetStringUTFChars(env, ephe_path, NULL);
+    if (path == NULL) {
+        LOGE("Failed to get ephe_path string");
+        return;
+    }
     swe_set_ephe_path((char *)path);
     (*env)->ReleaseStringUTFChars(env, ephe_path, path);
 }
@@ -43,6 +47,7 @@ Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeCalculateBody(
     }
 
     jdoubleArray jresult = (*env)->NewDoubleArray(env, 4);
+    if (jresult == NULL) return NULL;
     double out[4] = { result[0], result[1], result[2], result[3] };
     (*env)->SetDoubleArrayRegion(env, jresult, 0, 4, out);
     return jresult;
@@ -76,6 +81,7 @@ Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeCalculateHouses(
     out[15] = ic;       /* IC */
 
     jdoubleArray jresult = (*env)->NewDoubleArray(env, 16);
+    if (jresult == NULL) return NULL;
     (*env)->SetDoubleArrayRegion(env, jresult, 0, 16, out);
     return jresult;
 }
