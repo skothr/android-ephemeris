@@ -29,13 +29,13 @@ class SwissEphemeris : EphemerisProvider {
         initialized = false
     }
 
-    suspend fun julianDay(dateTime: LocalDateTime): Double = mutex.withLock {
+    override suspend fun julianDay(dateTime: LocalDateTime): Double = mutex.withLock {
         check(initialized) { "SwissEphemeris not initialized" }
         val hour = dateTime.hour + dateTime.minute / 60.0 + dateTime.second / 3600.0
         nativeJulianDay(dateTime.year, dateTime.monthValue, dateTime.dayOfMonth, hour)
     }
 
-    suspend fun calculateBody(julianDay: Double, body: CelestialBody): CelestialPosition =
+    override suspend fun calculateBody(julianDay: Double, body: CelestialBody): CelestialPosition =
         mutex.withLock {
             check(initialized) { "SwissEphemeris not initialized" }
             val result = nativeCalculateBody(julianDay, body.swissEphId)
@@ -48,7 +48,7 @@ class SwissEphemeris : EphemerisProvider {
             )
         }
 
-    suspend fun calculateHouses(
+    override suspend fun calculateHouses(
         julianDay: Double,
         latitude: Double,
         longitude: Double,
