@@ -8,7 +8,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.time.LocalDateTime
 
-class SwissEphemeris {
+class SwissEphemeris : EphemerisProvider {
 
     companion object {
         init {
