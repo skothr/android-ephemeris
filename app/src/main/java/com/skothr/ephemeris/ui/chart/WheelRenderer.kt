@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.nativeCanvas
 import com.skothr.ephemeris.chart.models.AspectResult
 import com.skothr.ephemeris.chart.models.CelestialBody
@@ -66,37 +68,72 @@ object WheelMath {
 
 object WheelDrawing {
 
+    // Cached Paint objects — reused every frame to avoid GC pressure during scrubbing
+    private val signPaint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        color = android.graphics.Color.WHITE
+        isAntiAlias = true
+    }
+    private val houseNumPaint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        color = android.graphics.Color.GRAY
+        isAntiAlias = true
+    }
+    private val bodyPaint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        color = android.graphics.Color.WHITE
+        isAntiAlias = true
+    }
+    private val angleLabelPaint = Paint().apply {
+        textSize = 24f
+        textAlign = Paint.Align.CENTER
+        color = android.graphics.Color.parseColor("#FFD54F")
+        isAntiAlias = true
+        isFakeBoldText = true
+    }
+
     fun DrawScope.drawZodiacRing(radii: RingRadii, cx: Float, cy: Float, ascendant: Double) {
+        // Clip to annular ring so arcs don't bleed into center
+        val clipPath = Path().apply {
+            addOval(androidx.compose.ui.geometry.Rect(
+                cx - radii.zodiacOuter, cy - radii.zodiacOuter,
+                cx + radii.zodiacOuter, cy + radii.zodiacOuter,
+            ))
+            // Subtract inner circle using EvenOdd fill
+            addOval(androidx.compose.ui.geometry.Rect(
+                cx - radii.zodiacInner, cy - radii.zodiacInner,
+                cx + radii.zodiacInner, cy + radii.zodiacInner,
+            ))
+        }
+
+        clipPath(clipPath, androidx.compose.ui.graphics.ClipOp.Intersect) {
+            val signs = ZodiacSign.entries
+            for (sign in signs) {
+                val startAngle = WheelMath.longitudeToAngle(sign.startDegree, ascendant)
+                val color = ChartColors.elementColor[sign.element] ?: Color.Gray
+
+                drawArc(
+                    color = color.copy(alpha = 0.3f),
+                    startAngle = Math.toDegrees(startAngle).toFloat(),
+                    sweepAngle = -30f,
+                    useCenter = true,
+                    topLeft = Offset(cx - radii.zodiacOuter, cy - radii.zodiacOuter),
+                    size = Size(radii.zodiacOuter * 2, radii.zodiacOuter * 2),
+                )
+            }
+        }
+
+        // Sign glyphs
+        signPaint.textSize = (radii.zodiacOuter - radii.zodiacInner) * 0.5f
         val signs = ZodiacSign.entries
         for (sign in signs) {
-            val startAngle = WheelMath.longitudeToAngle(sign.startDegree, ascendant)
-            val sweepAngle = -Math.toRadians(30.0)
-            val color = ChartColors.elementColor[sign.element] ?: Color.Gray
-
-            drawArc(
-                color = color.copy(alpha = 0.3f),
-                startAngle = Math.toDegrees(startAngle).toFloat(),
-                sweepAngle = Math.toDegrees(sweepAngle).toFloat(),
-                useCenter = true,
-                topLeft = Offset(cx - radii.zodiacOuter, cy - radii.zodiacOuter),
-                size = Size(radii.zodiacOuter * 2, radii.zodiacOuter * 2),
-            )
-
             val midLon = sign.startDegree + 15.0
             val midAngle = WheelMath.longitudeToAngle(midLon, ascendant)
             val midRadius = (radii.zodiacOuter + radii.zodiacInner) / 2f
             val (gx, gy) = WheelMath.pointOnCircle(cx, cy, midRadius, midAngle)
-
-            drawContext.canvas.nativeCanvas.drawText(
-                sign.symbol, gx, gy + 8f,
-                Paint().apply {
-                    textSize = (radii.zodiacOuter - radii.zodiacInner) * 0.5f
-                    textAlign = Paint.Align.CENTER
-                    this.color = android.graphics.Color.WHITE
-                    isAntiAlias = true
-                }
-            )
+            drawContext.canvas.nativeCanvas.drawText(sign.symbol, gx, gy + 8f, signPaint)
         }
+
         drawCircle(ChartColors.ringStroke, radii.zodiacOuter, Offset(cx, cy), style = Stroke(1.5f))
         drawCircle(ChartColors.ringStroke, radii.zodiacInner, Offset(cx, cy), style = Stroke(1.5f))
     }
@@ -105,6 +142,7 @@ object WheelDrawing {
         radii: RingRadii, cx: Float, cy: Float,
         houseData: HouseData, ascendant: Double,
     ) {
+        houseNumPaint.textSize = (radii.houseOuter - radii.houseInner) * 0.3f
         for (i in houseData.cusps.indices) {
             val angle = WheelMath.longitudeToAngle(houseData.cusps[i], ascendant)
             val (ox, oy) = WheelMath.pointOnCircle(cx, cy, radii.zodiacInner, angle)
@@ -118,15 +156,7 @@ object WheelDrawing {
             val numRadius = (radii.houseOuter + radii.houseInner) / 2f
             val (nx, ny) = WheelMath.pointOnCircle(cx, cy, numRadius, midAngle)
 
-            drawContext.canvas.nativeCanvas.drawText(
-                "${i + 1}", nx, ny + 6f,
-                Paint().apply {
-                    textSize = (radii.houseOuter - radii.houseInner) * 0.3f
-                    textAlign = Paint.Align.CENTER
-                    color = android.graphics.Color.GRAY
-                    isAntiAlias = true
-                }
-            )
+            drawContext.canvas.nativeCanvas.drawText("${i + 1}", nx, ny + 6f, houseNumPaint)
         }
         drawCircle(ChartColors.ringStroke, radii.houseInner, Offset(cx, cy), style = Stroke(1.5f))
     }
@@ -136,6 +166,7 @@ object WheelDrawing {
         positions: Map<CelestialBody, com.skothr.ephemeris.ephemeris.models.CelestialPosition>,
         ascendant: Double,
     ) {
+        bodyPaint.textSize = (radii.houseInner - radii.bodyRing) * 0.6f
         val bodiesByAngle = positions.entries
             .map { (body, pos) ->
                 Triple(body, pos, WheelMath.longitudeToAngle(pos.longitude, ascendant))
@@ -151,15 +182,7 @@ object WheelDrawing {
             val displayAngle = resolvedAngles[i]
 
             val (bx, by) = WheelMath.pointOnCircle(cx, cy, radii.bodyRing, displayAngle)
-            drawContext.canvas.nativeCanvas.drawText(
-                body.symbol, bx, by + 8f,
-                Paint().apply {
-                    textSize = (radii.houseInner - radii.bodyRing) * 0.6f
-                    textAlign = Paint.Align.CENTER
-                    color = android.graphics.Color.WHITE
-                    isAntiAlias = true
-                }
-            )
+            drawContext.canvas.nativeCanvas.drawText(body.symbol, bx, by + 8f, bodyPaint)
 
             val (tx, ty) = WheelMath.pointOnCircle(cx, cy, radii.houseInner, originalAngle)
             val (tx2, ty2) = WheelMath.pointOnCircle(cx, cy, radii.houseInner - 8f, originalAngle)
@@ -214,16 +237,7 @@ object WheelDrawing {
             drawLine(ChartColors.angleMarker, Offset(ox, oy), Offset(ix, iy), strokeWidth = 2f)
 
             val (lx, ly) = WheelMath.pointOnCircle(cx, cy, radii.zodiacOuter + 14f, angle)
-            drawContext.canvas.nativeCanvas.drawText(
-                label, lx, ly + 5f,
-                Paint().apply {
-                    textSize = 24f
-                    textAlign = Paint.Align.CENTER
-                    color = android.graphics.Color.parseColor("#FFD54F")
-                    isAntiAlias = true
-                    isFakeBoldText = true
-                }
-            )
+            drawContext.canvas.nativeCanvas.drawText(label, lx, ly + 5f, angleLabelPaint)
         }
     }
 }

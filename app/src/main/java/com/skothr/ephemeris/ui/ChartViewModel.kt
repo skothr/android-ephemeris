@@ -1,5 +1,6 @@
 package com.skothr.ephemeris.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skothr.ephemeris.chart.ChartCalculator
@@ -52,7 +53,7 @@ class ChartViewModel(
                     try {
                         _chartData.value = chartCalculator.calculate(dt, loc, hs)
                     } catch (e: Exception) {
-                        // Log error, keep last valid chart
+                        Log.e("ChartViewModel", "Chart calculation failed", e)
                     } finally {
                         _isCalculating.value = false
                     }

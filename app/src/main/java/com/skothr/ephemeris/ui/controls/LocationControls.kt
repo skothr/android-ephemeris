@@ -6,12 +6,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -131,16 +141,31 @@ fun LocationControls(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            CoordField("Lat", "%.4f".format(location.latitude), Modifier.weight(1f)) { delta ->
-                val newLat = (location.latitude + delta * 0.1).coerceIn(-90.0, 90.0)
-                onLocationChanged(Location(newLat, location.longitude), timezone)
-            }
-            CoordField("Lon", "%.4f".format(location.longitude), Modifier.weight(1f)) { delta ->
-                val newLon = (location.longitude + delta * 0.1).let { l ->
-                    ((l + 180.0) % 360.0 + 360.0) % 360.0 - 180.0
-                }
-                onLocationChanged(Location(location.latitude, newLon), timezone)
-            }
+            CoordField("Lat", "%.4f".format(location.latitude), Modifier.weight(1f),
+                onDelta = { delta ->
+                    val newLat = (location.latitude + delta * 0.1).coerceIn(-90.0, 90.0)
+                    onLocationChanged(Location(newLat, location.longitude), timezone)
+                },
+                onValueTyped = { typed ->
+                    typed.toDoubleOrNull()?.let { lat ->
+                        onLocationChanged(Location(lat.coerceIn(-90.0, 90.0), location.longitude), timezone)
+                    }
+                },
+            )
+            CoordField("Lon", "%.4f".format(location.longitude), Modifier.weight(1f),
+                onDelta = { delta ->
+                    val newLon = (location.longitude + delta * 0.1).let { l ->
+                        ((l + 180.0) % 360.0 + 360.0) % 360.0 - 180.0
+                    }
+                    onLocationChanged(Location(location.latitude, newLon), timezone)
+                },
+                onValueTyped = { typed ->
+                    typed.toDoubleOrNull()?.let { lon ->
+                        val clamped = ((lon + 180.0) % 360.0 + 360.0) % 360.0 - 180.0
+                        onLocationChanged(Location(location.latitude, clamped), timezone)
+                    }
+                },
+            )
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -158,9 +183,14 @@ private fun CoordField(
     value: String,
     modifier: Modifier = Modifier,
     onDelta: (Int) -> Unit,
+    onValueTyped: ((String) -> Unit)? = null,
 ) {
+    var isEditing by remember { mutableStateOf(false) }
+    var editText by remember { mutableStateOf("") }
     var accumulatedDrag by remember { mutableFloatStateOf(0f) }
     val dragThreshold = 20f
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = modifier
@@ -169,11 +199,13 @@ private fun CoordField(
                 detectVerticalDragGestures(
                     onDragStart = { accumulatedDrag = 0f },
                     onVerticalDrag = { _, dragAmount ->
-                        accumulatedDrag += dragAmount
-                        val units = (accumulatedDrag / dragThreshold).roundToInt()
-                        if (units != 0) {
-                            onDelta(-units)
-                            accumulatedDrag -= units * dragThreshold
+                        if (!isEditing) {
+                            accumulatedDrag += dragAmount
+                            val units = (accumulatedDrag / dragThreshold).roundToInt()
+                            if (units != 0) {
+                                onDelta(-units)
+                                accumulatedDrag -= units * dragThreshold
+                            }
                         }
                     },
                 )
@@ -181,6 +213,39 @@ private fun CoordField(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontSize = 14.sp, textAlign = TextAlign.Center)
+
+        if (isEditing && onValueTyped != null) {
+            BasicTextField(
+                value = editText,
+                onValueChange = { editText = it.filter { c -> c.isDigit() || c == '.' || c == '-' } },
+                modifier = Modifier
+                    .width(72.dp)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { if (!it.isFocused) { onValueTyped(editText); isEditing = false } },
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { onValueTyped(editText); isEditing = false; focusManager.clearFocus() },
+                ),
+                singleLine = true,
+            )
+            LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        } else {
+            Text(
+                text = value,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = if (onValueTyped != null) {
+                    Modifier.clickable { editText = value; isEditing = true }
+                } else Modifier,
+            )
+        }
     }
 }
