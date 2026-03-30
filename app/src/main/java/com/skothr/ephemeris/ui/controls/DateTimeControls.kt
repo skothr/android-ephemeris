@@ -13,6 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
@@ -113,9 +117,19 @@ private fun ScrubField(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    // Consume vertical scroll so parent verticalScroll doesn't steal the gesture
+    val consumeVerticalScroll = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                return Offset(0f, available.y)
+            }
+        }
+    }
+
     Column(
         modifier = modifier
             .padding(horizontal = 2.dp)
+            .nestedScroll(consumeVerticalScroll)
             .pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onDragStart = { accumulatedDrag = 0f },
