@@ -2,6 +2,7 @@ package com.skothr.ephemeris
 
 import android.app.Application
 import com.skothr.ephemeris.ephemeris.SwissEphemeris
+import com.skothr.ephemeris.settings.SettingsRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,7 @@ class EphemerisApp : Application() {
 
     val swissEphemeris = SwissEphemeris()
     val ephemerisReady = CompletableDeferred<Unit>()
+    val settingsRepository by lazy { SettingsRepository(this) }
 
     override fun onCreate() {
         super.onCreate()
