@@ -109,7 +109,7 @@ private fun ScrubField(
     var isEditing by remember { mutableStateOf(false) }
     var editText by remember { mutableStateOf("") }
     var accumulatedDrag by remember { mutableFloatStateOf(0f) }
-    val dragThreshold = 20f
+    val dragThreshold = 48f  // pixels per unit — higher = smoother, less twitchy
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -122,10 +122,9 @@ private fun ScrubField(
                     onVerticalDrag = { _, dragAmount ->
                         if (!isEditing) {
                             accumulatedDrag += dragAmount
-                            val speed = 1 + (abs(accumulatedDrag) / 200f).toInt()
-                            val units = (accumulatedDrag / dragThreshold).roundToInt()
+                            val units = (accumulatedDrag / dragThreshold).toInt()
                             if (units != 0) {
-                                onDelta(-units * speed)
+                                onDelta(-units)
                                 accumulatedDrag -= units * dragThreshold
                             }
                         }
