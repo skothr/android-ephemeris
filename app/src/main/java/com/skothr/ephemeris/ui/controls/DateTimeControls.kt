@@ -1,7 +1,9 @@
 package com.skothr.ephemeris.ui.controls
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,11 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -117,33 +116,27 @@ private fun ScrubField(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    // Consume vertical scroll so parent verticalScroll doesn't steal the gesture
-    val consumeVerticalScroll = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                return Offset(0f, available.y)
-            }
-        }
-    }
-
     Column(
         modifier = modifier
             .padding(horizontal = 2.dp)
-            .nestedScroll(consumeVerticalScroll)
             .pointerInput(Unit) {
-                detectVerticalDragGestures(
-                    onDragStart = { accumulatedDrag = 0f },
-                    onVerticalDrag = { _, dragAmount ->
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    down.consume()
+                    accumulatedDrag = 0f
+                    drag(down.id) { change ->
+                        val dy = change.positionChange().y
+                        change.consume()
                         if (!isEditing) {
-                            accumulatedDrag += dragAmount
+                            accumulatedDrag += dy
                             val units = (accumulatedDrag / dragThreshold).toInt()
                             if (units != 0) {
                                 onDelta(-units)
                                 accumulatedDrag -= units * dragThreshold
                             }
                         }
-                    },
-                )
+                    }
+                }
             },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
