@@ -5,6 +5,7 @@
 
 #define LOG_TAG "SwissEphemeris"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
 JNIEXPORT void JNICALL
 Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeInit(
@@ -14,8 +15,10 @@ Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeInit(
         LOGE("Failed to get ephe_path string");
         return;
     }
+    LOGI("Setting ephemeris path to: %s", path);
     swe_set_ephe_path((char *)path);
     (*env)->ReleaseStringUTFChars(env, ephe_path, path);
+    LOGI("Ephemeris path set successfully");
 }
 
 JNIEXPORT void JNICALL
@@ -40,9 +43,10 @@ Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeCalculateBody(
     char err[256];
     int flags = SEFLG_SPEED | SEFLG_SWIEPH;
 
+    LOGI("swe_calc_ut: body=%d, jd=%.6f, flags=%d", body_id, jd, flags);
     int rc = swe_calc_ut(jd, body_id, flags, result, err);
     if (rc < 0) {
-        LOGE("swe_calc_ut error for body %d: %s", body_id, err);
+        LOGE("swe_calc_ut error for body %d (rc=%d): %s", body_id, rc, err);
         return NULL;
     }
 
