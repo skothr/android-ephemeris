@@ -51,6 +51,10 @@ obj/
 # Google Services
 google-services.json
 
+# Worktrees and superpowers
+.worktrees/
+.superpowers/
+
 # macOS
 .DS_Store
 
