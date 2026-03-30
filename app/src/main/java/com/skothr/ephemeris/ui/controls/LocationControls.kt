@@ -30,12 +30,16 @@ import kotlin.math.roundToInt
 
 data class CityData(
     val name: String,
+    val admin1: String,
     val country: String,
     val latitude: Double,
     val longitude: Double,
     val timezone: String,
     val population: Long,
-)
+) {
+    val displayName: String
+        get() = if (admin1.isNotEmpty()) "$name, $admin1, $country" else "$name, $country"
+}
 
 class CityDatabase(context: Context) {
     private val cities: List<CityData> by lazy {
@@ -51,6 +55,7 @@ class CityDatabase(context: Context) {
                                 try {
                                     result.add(CityData(
                                         name = cols[1],
+                                        admin1 = cols[10],
                                         country = cols[8],
                                         latitude = cols[4].toDouble(),
                                         longitude = cols[5].toDouble(),
@@ -69,9 +74,20 @@ class CityDatabase(context: Context) {
 
     fun search(query: String, limit: Int = 20): List<CityData> {
         if (query.length < 2) return emptyList()
-        val lower = query.lowercase()
+        val tokens = query.lowercase().split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        if (tokens.isEmpty()) return emptyList()
+        val nameToken = tokens.first()
+        val extraTokens = tokens.drop(1)
         return cities
-            .filter { it.name.lowercase().startsWith(lower) }
+            .filter { city ->
+                // First token matches city name prefix
+                city.name.lowercase().startsWith(nameToken) &&
+                // Additional tokens match admin1 or country (prefix)
+                extraTokens.all { token ->
+                    city.admin1.lowercase().startsWith(token) ||
+                    city.country.lowercase().startsWith(token)
+                }
+            }
             .take(limit)
     }
 }
@@ -123,7 +139,7 @@ fun LocationControls(
             Column {
                 searchResults.take(8).forEach { city ->
                     Text(
-                        text = "${city.name}, ${city.country}",
+                        text = city.displayName,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
@@ -131,7 +147,7 @@ fun LocationControls(
                                     Location(city.latitude, city.longitude),
                                     city.timezone,
                                 )
-                                searchQuery = "${city.name}, ${city.country}"
+                                searchQuery = city.displayName
                                 showSearch = false
                             }
                             .padding(8.dp),
