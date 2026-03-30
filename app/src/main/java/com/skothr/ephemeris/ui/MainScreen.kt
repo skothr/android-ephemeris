@@ -7,7 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.skothr.ephemeris.ui.chart.ChartWheel
 import com.skothr.ephemeris.ui.controls.DateTimeControls
@@ -30,55 +32,63 @@ fun MainScreen(viewModel: ChartViewModel) {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
 
-            Column(
+            // imePadding on the outer Box shrinks available space when keyboard opens
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .imePadding()
-                    .verticalScroll(scrollState)
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .imePadding(),
             ) {
-                chartData?.let { data ->
-                    ChartWheel(
-                        chartData = data,
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    chartData?.let { data ->
+                        ChartWheel(
+                            chartData = data,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                        )
+                    } ?: Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .aspectRatio(1f),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+
+                    if (isCalculating) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    DateTimeControls(
+                        dateTime = dateTime,
+                        onDateTimeChanged = { viewModel.updateDateTime(it) },
                     )
-                } ?: Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
 
-                if (isCalculating) {
-                    LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                    LocationControls(
+                        location = location,
+                        timezone = timezone,
+                        onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
+                        onSearchFocused = {
+                            // Delay to let keyboard animation start and imePadding resize
+                            coroutineScope.launch {
+                                delay(300)
+                                scrollState.animateScrollTo(scrollState.maxValue)
+                            }
+                        },
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                DateTimeControls(
-                    dateTime = dateTime,
-                    onDateTimeChanged = { viewModel.updateDateTime(it) },
-                )
-
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-
-                LocationControls(
-                    location = location,
-                    timezone = timezone,
-                    onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
-                    onSearchFocused = {
-                        coroutineScope.launch {
-                            scrollState.animateScrollTo(scrollState.maxValue)
-                        }
-                    },
-                )
             }
         }
     }
