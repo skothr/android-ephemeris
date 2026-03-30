@@ -84,6 +84,7 @@ fun LocationControls(
     timezone: String,
     onLocationChanged: (Location, String) -> Unit,
     modifier: Modifier = Modifier,
+    onSearchFocused: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val cityDb = remember { CityDatabase(context) }
@@ -109,7 +110,9 @@ fun LocationControls(
                 showSearch = true
             },
             label = { Text("City") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { if (it.isFocused) onSearchFocused() },
             singleLine = true,
         )
 

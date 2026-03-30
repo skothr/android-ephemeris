@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import com.skothr.ephemeris.ui.chart.ChartWheel
 import com.skothr.ephemeris.ui.controls.DateTimeControls
 import com.skothr.ephemeris.ui.controls.LocationControls
@@ -26,10 +27,14 @@ fun MainScreen(viewModel: ChartViewModel) {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
+            val scrollState = rememberScrollState()
+            val coroutineScope = rememberCoroutineScope()
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+                    .verticalScroll(scrollState)
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -68,6 +73,11 @@ fun MainScreen(viewModel: ChartViewModel) {
                     location = location,
                     timezone = timezone,
                     onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
+                    onSearchFocused = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(scrollState.maxValue)
+                        }
+                    },
                 )
             }
         }
