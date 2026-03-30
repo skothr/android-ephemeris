@@ -27,7 +27,7 @@ data class RingRadii(
 
 object WheelMath {
     fun longitudeToAngle(longitude: Double, ascendant: Double): Double {
-        val adjusted = ascendant - longitude
+        val adjusted = ascendant - longitude + 180.0
         val radians = Math.toRadians(adjusted)
         return ((radians % (2 * PI)) + 2 * PI) % (2 * PI)
     }
