@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,18 +31,18 @@ fun MainScreen(viewModel: ChartViewModel) {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
 
-            // imePadding on the outer Box shrinks available space when keyboard opens
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .imePadding(),
             ) {
-                Column(
+                // Chart area — scrollable, takes remaining space
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(scrollState),
+                    contentAlignment = Alignment.TopCenter,
                 ) {
                     chartData?.let { data ->
                         ChartWheel(
@@ -60,35 +59,33 @@ fun MainScreen(viewModel: ChartViewModel) {
                     ) {
                         CircularProgressIndicator()
                     }
+                }
 
-                    if (isCalculating) {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    DateTimeControls(
-                        dateTime = dateTime,
-                        onDateTimeChanged = { viewModel.updateDateTime(it) },
-                    )
-
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-
-                    LocationControls(
-                        location = location,
-                        timezone = timezone,
-                        onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
-                        onResultsVisible = {
-                            coroutineScope.launch {
-                                // Small delay for results to render, then scroll to bottom
-                                delay(100)
-                                scrollState.animateScrollTo(scrollState.maxValue)
-                            }
-                        },
+                if (isCalculating) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     )
                 }
+
+                // Controls — fixed at bottom, outside scroll
+                DateTimeControls(
+                    dateTime = dateTime,
+                    onDateTimeChanged = { viewModel.updateDateTime(it) },
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
+
+                LocationControls(
+                    location = location,
+                    timezone = timezone,
+                    onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
+                    onResultsVisible = {
+                        coroutineScope.launch {
+                            delay(100)
+                            scrollState.animateScrollTo(scrollState.maxValue)
+                        }
+                    },
+                )
             }
         }
     }
