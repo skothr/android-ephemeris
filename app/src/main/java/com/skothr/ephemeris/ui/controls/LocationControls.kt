@@ -3,8 +3,6 @@ package com.skothr.ephemeris.ui.controls
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -84,7 +82,7 @@ fun LocationControls(
     timezone: String,
     onLocationChanged: (Location, String) -> Unit,
     modifier: Modifier = Modifier,
-    onSearchFocused: () -> Unit = {},
+    onResultsVisible: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val cityDb = remember { CityDatabase(context) }
@@ -102,6 +100,13 @@ fun LocationControls(
         }
     }
 
+    // Scroll into view when results appear
+    LaunchedEffect(searchResults) {
+        if (showSearch && searchResults.isNotEmpty()) {
+            onResultsVisible()
+        }
+    }
+
     Column(modifier = modifier.padding(8.dp)) {
         OutlinedTextField(
             value = searchQuery,
@@ -110,15 +115,13 @@ fun LocationControls(
                 showSearch = true
             },
             label = { Text("City") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { if (it.isFocused) onSearchFocused() },
+            modifier = Modifier.fillMaxWidth(),
             singleLine = true,
         )
 
         if (showSearch && searchResults.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.heightIn(max = 150.dp)) {
-                items(searchResults) { city ->
+            Column {
+                searchResults.take(8).forEach { city ->
                     Text(
                         text = "${city.name}, ${city.country}",
                         modifier = Modifier

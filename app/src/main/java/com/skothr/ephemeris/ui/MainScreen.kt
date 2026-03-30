@@ -80,10 +80,10 @@ fun MainScreen(viewModel: ChartViewModel) {
                         location = location,
                         timezone = timezone,
                         onLocationChanged = { loc, tz -> viewModel.updateLocation(loc, tz) },
-                        onSearchFocused = {
-                            // Delay to let keyboard animation start and imePadding resize
+                        onResultsVisible = {
                             coroutineScope.launch {
-                                delay(300)
+                                // Small delay for results to render, then scroll to bottom
+                                delay(100)
                                 scrollState.animateScrollTo(scrollState.maxValue)
                             }
                         },
