@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <rect width="1024" height="500" fill="#121212"/>
+
+  <defs>
+    <radialGradient id="glow" cx="200" cy="250" r="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A5578" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#121212" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#glow)"/>
+
+  <circle cx="200" cy="250" r="143" fill="none" stroke="#4A5578" stroke-width="3.2"/>
+  <circle cx="200" cy="250" r="110" fill="none" stroke="#4A5578" stroke-width="1.9" opacity="0.7"/>
+
+  <g stroke="#4A5578" stroke-width="1.8" opacity="0.55">
+    <line x1="200" y1="107" x2="200" y2="140"/>
+    <line x1="271.5" y1="126" x2="255" y2="154"/>
+    <line x1="323.8" y1="178" x2="295.3" y2="195"/>
+    <line x1="343" y1="250" x2="310" y2="250"/>
+    <line x1="323.8" y1="322" x2="295.3" y2="305"/>
+    <line x1="271.5" y1="374" x2="255" y2="346"/>
+    <line x1="200" y1="393" x2="200" y2="360"/>
+    <line x1="128.5" y1="374" x2="145" y2="346"/>
+    <line x1="76.2" y1="322" x2="104.7" y2="305"/>
+    <line x1="57" y1="250" x2="90" y2="250"/>
+    <line x1="76.2" y1="178" x2="104.7" y2="195"/>
+    <line x1="128.5" y1="126" x2="145" y2="154"/>
+  </g>
+
+  <circle cx="237" cy="111.5" r="7" fill="#A8656A"/>
+  <circle cx="301.2" cy="148.5" r="7" fill="#5E8A68"/>
+  <circle cx="338.2" cy="213" r="7" fill="#9E8A5C"/>
+  <circle cx="338.2" cy="287" r="7" fill="#5880A0"/>
+  <circle cx="301.2" cy="351.5" r="7" fill="#A8656A"/>
+  <circle cx="237" cy="388.5" r="7" fill="#5E8A68"/>
+  <circle cx="163" cy="388.5" r="7" fill="#9E8A5C"/>
+  <circle cx="98.8" cy="351.5" r="7" fill="#5880A0"/>
+  <circle cx="61.8" cy="287" r="7" fill="#A8656A"/>
+  <circle cx="61.8" cy="213" r="7" fill="#5E8A68"/>
+  <circle cx="98.8" cy="148.5" r="7" fill="#9E8A5C"/>
+  <circle cx="163" cy="111.5" r="7" fill="#5880A0"/>
+
+  <circle cx="200" cy="250" r="26" fill="none" stroke="#FFB300" stroke-width="3.2"/>
+  <circle cx="200" cy="250" r="5.5" fill="#FFB300"/>
+</svg>
