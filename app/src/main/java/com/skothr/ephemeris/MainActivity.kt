@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val app = application as EphemerisApp
-                return ChartViewModel(app.swissEphemeris, app.ephemerisReady) as T
+                return ChartViewModel(app.swissEphemeris, app.ephemerisReady, app.settingsRepository) as T
             }
         }
     }
@@ -26,7 +26,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MainScreen(viewModel)
+            val app = application as EphemerisApp
+            MainScreen(viewModel, app.settingsRepository)
         }
     }
 }

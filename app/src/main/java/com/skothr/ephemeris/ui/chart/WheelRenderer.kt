@@ -14,6 +14,8 @@ import com.skothr.ephemeris.chart.models.AspectResult
 import com.skothr.ephemeris.chart.models.CelestialBody
 import com.skothr.ephemeris.chart.models.ZodiacSign
 import com.skothr.ephemeris.ephemeris.models.HouseData
+import com.skothr.ephemeris.settings.model.VisualSettings
+import com.skothr.ephemeris.settings.model.LineStyle
 import kotlin.math.*
 
 data class RingRadii(
@@ -38,13 +40,13 @@ object WheelMath {
         return Pair(x, y)
     }
 
-    fun calculateRingRadii(availableRadius: Float): RingRadii {
+    fun calculateRingRadii(availableRadius: Float, visual: VisualSettings): RingRadii {
         return RingRadii(
-            zodiacOuter = availableRadius * 0.95f,
-            zodiacInner = availableRadius * 0.82f,
-            houseOuter = availableRadius * 0.82f,
-            houseInner = availableRadius * 0.68f,
-            bodyRing = availableRadius * 0.58f,
+            zodiacOuter = availableRadius * visual.zodiacOuterRadius,
+            zodiacInner = availableRadius * visual.zodiacInnerRadius,
+            houseOuter = availableRadius * visual.houseOuterRadius,
+            houseInner = availableRadius * visual.houseInnerRadius,
+            bodyRing = availableRadius * visual.bodyRingRadius,
             aspectInner = availableRadius * 0.10f,
         )
     }
@@ -195,6 +197,7 @@ object WheelDrawing {
         aspects: List<AspectResult>,
         positions: Map<CelestialBody, com.skothr.ephemeris.ephemeris.models.CelestialPosition>,
         ascendant: Double,
+        visual: VisualSettings,
     ) {
         for (aspect in aspects) {
             val pos1 = positions[aspect.body1] ?: continue
@@ -207,14 +210,17 @@ object WheelDrawing {
             val (x2, y2) = WheelMath.pointOnCircle(cx, cy, innerRadius, angle2)
 
             val color = ChartColors.aspectColor[aspect.aspect] ?: Color.Gray
-            val alpha = 1f - (aspect.orb.toFloat() / aspect.aspect.defaultOrb.toFloat()) * 0.7f
-            val pathEffect = if (aspect.aspect.isMajor) null
-                else PathEffect.dashPathEffect(floatArrayOf(8f, 4f))
+            val orbFraction = (aspect.orb.toFloat() / (aspect.aspect.defaultOrb.toFloat())).coerceIn(0f, 1f)
+            val alpha = visual.aspectLineOpacity * (1f - orbFraction * 0.7f)
+
+            val lineStyle = if (aspect.aspect.isMajor) visual.majorAspectStyle else visual.minorAspectStyle
+            val pathEffect = if (lineStyle == LineStyle.DASHED)
+                PathEffect.dashPathEffect(floatArrayOf(8f, 4f)) else null
 
             drawLine(
-                color = color.copy(alpha = alpha.coerceIn(0.2f, 1f)),
+                color = color.copy(alpha = alpha.coerceIn(0.1f, 1f)),
                 start = Offset(x1, y1), end = Offset(x2, y2),
-                strokeWidth = if (aspect.aspect.isMajor) 1.5f else 1f,
+                strokeWidth = if (aspect.aspect.isMajor) visual.aspectLineThickness else visual.aspectLineThickness * 0.7f,
                 pathEffect = pathEffect,
             )
         }

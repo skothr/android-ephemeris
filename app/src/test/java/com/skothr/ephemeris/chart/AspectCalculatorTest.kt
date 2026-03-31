@@ -1,6 +1,5 @@
 package com.skothr.ephemeris.chart
 
-import com.skothr.ephemeris.chart.config.AspectConfig
 import com.skothr.ephemeris.chart.models.*
 import com.skothr.ephemeris.ephemeris.models.CelestialPosition
 import org.junit.Assert.*
@@ -10,11 +9,13 @@ import org.junit.Test
 class AspectCalculatorTest {
 
     private lateinit var calculator: AspectCalculator
-    private val defaultConfig = AspectConfig()
 
     @Before
     fun setup() {
-        calculator = AspectCalculator(defaultConfig)
+        calculator = AspectCalculator(
+            enabledAspects = Aspect.entries.toSet(),
+            aspectOrbs = Aspect.entries.associateWith { it.defaultOrb },
+        )
     }
 
     private fun pos(longitude: Double, speed: Double = 1.0) =
@@ -141,8 +142,10 @@ class AspectCalculatorTest {
 
     @Test
     fun `disabled aspect not detected`() {
-        val config = AspectConfig(enabledAspects = mapOf(Aspect.CONJUNCTION to 8.0))
-        val calc = AspectCalculator(config)
+        val calc = AspectCalculator(
+            enabledAspects = setOf(Aspect.CONJUNCTION),
+            aspectOrbs = mapOf(Aspect.CONJUNCTION to 8.0),
+        )
         val positions = mapOf(
             CelestialBody.SUN to pos(0.0),
             CelestialBody.MOON to pos(90.0),

@@ -1,5 +1,6 @@
 package com.skothr.ephemeris.ui.chart
 
+import com.skothr.ephemeris.settings.model.VisualSettings
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.math.PI
@@ -48,7 +49,7 @@ class WheelRendererTest {
 
     @Test
     fun `ringRadii are properly nested`() {
-        val radii = WheelMath.calculateRingRadii(500f)
+        val radii = WheelMath.calculateRingRadii(500f, VisualSettings())
         assertTrue("Zodiac outer > zodiac inner", radii.zodiacOuter > radii.zodiacInner)
         assertTrue("Zodiac inner >= house outer", radii.zodiacInner >= radii.houseOuter)
         assertTrue("House outer > house inner", radii.houseOuter > radii.houseInner)

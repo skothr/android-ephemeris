@@ -1,6 +1,5 @@
 package com.skothr.ephemeris.ephemeris
 
-import com.skothr.ephemeris.chart.models.CelestialBody
 import com.skothr.ephemeris.chart.models.HouseSystem
 import com.skothr.ephemeris.ephemeris.models.CelestialPosition
 import com.skothr.ephemeris.ephemeris.models.HouseData
@@ -35,11 +34,11 @@ class SwissEphemeris : EphemerisProvider {
         nativeJulianDay(dateTime.year, dateTime.monthValue, dateTime.dayOfMonth, hour)
     }
 
-    override suspend fun calculateBody(julianDay: Double, body: CelestialBody): CelestialPosition =
+    override suspend fun calculateBody(julianDay: Double, bodyId: Int, flags: Int): CelestialPosition =
         mutex.withLock {
             check(initialized) { "SwissEphemeris not initialized" }
-            val result = nativeCalculateBody(julianDay, body.swissEphId)
-                ?: throw RuntimeException("Failed to calculate position for ${body.name}")
+            val result = nativeCalculateBodyWithFlags(julianDay, bodyId, flags)
+                ?: throw RuntimeException("Failed to calculate position for body $bodyId")
             CelestialPosition(
                 longitude = result[0],
                 latitude = result[1],
@@ -66,11 +65,24 @@ class SwissEphemeris : EphemerisProvider {
         )
     }
 
+    override suspend fun setSiderealMode(ayanamsa: Int) = mutex.withLock {
+        check(initialized) { "SwissEphemeris not initialized" }
+        nativeSetSiderealMode(ayanamsa)
+    }
+
+    override suspend fun setTopographicPosition(longitude: Double, latitude: Double, altitude: Double) = mutex.withLock {
+        check(initialized) { "SwissEphemeris not initialized" }
+        nativeSetTopographicPosition(longitude, latitude, altitude)
+    }
+
     private external fun nativeInit(ephePath: String)
     private external fun nativeClose()
     private external fun nativeJulianDay(year: Int, month: Int, day: Int, hour: Double): Double
     private external fun nativeCalculateBody(julianDay: Double, bodyId: Int): DoubleArray?
+    private external fun nativeCalculateBodyWithFlags(julianDay: Double, bodyId: Int, flags: Int): DoubleArray?
     private external fun nativeCalculateHouses(
         julianDay: Double, lat: Double, lon: Double, houseSystem: Char
     ): DoubleArray?
+    private external fun nativeSetSiderealMode(sidMode: Int)
+    private external fun nativeSetTopographicPosition(lon: Double, lat: Double, alt: Double)
 }

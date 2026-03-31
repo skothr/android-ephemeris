@@ -89,3 +89,39 @@ Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeCalculateHouses(
     (*env)->SetDoubleArrayRegion(env, jresult, 0, 16, out);
     return jresult;
 }
+
+JNIEXPORT void JNICALL
+Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeSetSiderealMode(
+    JNIEnv *env, jobject thiz, jint sid_mode) {
+    swe_set_sid_mode(sid_mode, 0, 0);
+    LOGI("Set sidereal mode to: %d", sid_mode);
+}
+
+JNIEXPORT void JNICALL
+Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeSetTopographicPosition(
+    JNIEnv *env, jobject thiz,
+    jdouble lon, jdouble lat, jdouble alt) {
+    swe_set_topo(lon, lat, alt);
+    LOGI("Set topographic position to: lon=%.4f, lat=%.4f, alt=%.1f", lon, lat, alt);
+}
+
+JNIEXPORT jdoubleArray JNICALL
+Java_com_skothr_ephemeris_ephemeris_SwissEphemeris_nativeCalculateBodyWithFlags(
+    JNIEnv *env, jobject thiz,
+    jdouble jd, jint body_id, jint flags) {
+    double result[6];
+    char err[256];
+
+    LOGI("swe_calc_ut: body=%d, jd=%.6f, flags=%d", body_id, jd, flags);
+    int rc = swe_calc_ut(jd, body_id, flags, result, err);
+    if (rc < 0) {
+        LOGE("swe_calc_ut error for body %d (rc=%d): %s", body_id, rc, err);
+        return NULL;
+    }
+
+    jdoubleArray jresult = (*env)->NewDoubleArray(env, 4);
+    if (jresult == NULL) return NULL;
+    double out[4] = { result[0], result[1], result[2], result[3] };
+    (*env)->SetDoubleArrayRegion(env, jresult, 0, 4, out);
+    return jresult;
+}
