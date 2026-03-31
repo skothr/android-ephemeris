@@ -49,6 +49,7 @@ fun MainScreen(viewModel: ChartViewModel, settingsRepository: SettingsRepository
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .statusBarsPadding()
                         .imePadding(),
                 ) {
                     // Chart area — scrollable, takes remaining space
