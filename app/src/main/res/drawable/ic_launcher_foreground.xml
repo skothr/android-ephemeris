@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Outer ring: r=66.7, center=(100,100), stroke=#4A5578 -->
+    <path
+        android:pathData="M33.3,100 A66.7,66.7,0,1,1,166.7,100 A66.7,66.7,0,1,1,33.3,100 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#4A5578"
+        android:strokeWidth="1.67"/>
+
+    <!-- Inner ring: r=51.5, center=(100,100), stroke=#4A5578, alpha=0.7 -->
+    <path
+        android:pathData="M48.5,100 A51.5,51.5,0,1,1,151.5,100 A51.5,51.5,0,1,1,48.5,100 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#4A5578"
+        android:strokeWidth="0.98"
+        android:strokeAlpha="0.7"/>
+
+    <!-- 12 radial tick marks at 30-degree intervals (sign boundaries) -->
+    <group android:alpha="0.55">
+        <path
+            android:pathData="M100,33.3 L100,48.5 M133.4,42.2 L125.8,55.4 M157.8,66.7 L144.6,74.3 M166.7,100 L151.5,100 M157.8,133.3 L144.6,125.8 M133.4,157.8 L125.8,144.6 M100,166.7 L100,151.5 M66.7,157.8 L74.3,144.6 M42.2,133.4 L55.4,125.8 M33.3,100 L48.5,100 M42.2,66.7 L55.4,74.3 M66.7,42.2 L74.3,55.4"
+            android:fillColor="#00000000"
+            android:strokeColor="#4A5578"
+            android:strokeWidth="0.91"/>
+    </group>
+
+    <!-- Element marker dots (r=2.7, offset +15deg from tick marks) -->
+    <!-- Fire signs: #A8656A (Aries 15deg, Leo 135deg, Sag 255deg) -->
+    <path
+        android:pathData="M114.6,35.6 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#A8656A"/>
+    <path
+        android:pathData="M144.5,147.2 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#A8656A"/>
+    <path
+        android:pathData="M32.9,117.3 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#A8656A"/>
+
+    <!-- Earth signs: #5E8A68 (Taurus 45deg, Virgo 165deg, Cap 285deg) -->
+    <path
+        android:pathData="M144.5,52.8 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5E8A68"/>
+    <path
+        android:pathData="M114.6,164.4 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5E8A68"/>
+    <path
+        android:pathData="M32.9,82.7 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5E8A68"/>
+
+    <!-- Air signs: #9E8A5C (Gemini 75deg, Libra 195deg, Aqua 315deg) -->
+    <path
+        android:pathData="M161.7,82.7 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#9E8A5C"/>
+    <path
+        android:pathData="M80.0,164.4 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#9E8A5C"/>
+    <path
+        android:pathData="M50.1,52.8 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#9E8A5C"/>
+
+    <!-- Water signs: #5880A0 (Cancer 105deg, Scorpio 225deg, Pisces 345deg) -->
+    <path
+        android:pathData="M161.7,117.3 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5880A0"/>
+    <path
+        android:pathData="M50.1,147.2 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5880A0"/>
+    <path
+        android:pathData="M80.0,35.6 a2.7,2.7,0,1,1,5.4,0 a2.7,2.7,0,1,1,-5.4,0 Z"
+        android:fillColor="#5880A0"/>
+
+    <!-- Sun glyph: outer circle r=12.1, stroke=#FFB300 -->
+    <path
+        android:pathData="M87.9,100 A12.1,12.1,0,1,1,112.1,100 A12.1,12.1,0,1,1,87.9,100 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFB300"
+        android:strokeWidth="1.67"/>
+
+    <!-- Sun glyph: inner dot r=2.7, fill=#FFB300 -->
+    <path
+        android:pathData="M97.3,100 A2.7,2.7,0,1,1,102.7,100 A2.7,2.7,0,1,1,97.3,100 Z"
+        android:fillColor="#FFB300"/>
+
+</vector>
