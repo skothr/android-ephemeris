@@ -68,15 +68,20 @@ fun SettingsScreen(
                     settings = settings.visual,
                     onThemeChanged = { scope.launch { repository.setTheme(it) } },
                     onSymbolStyleChanged = { scope.launch { repository.setSymbolStyle(it) } },
+                    onLockAscendantChanged = { scope.launch { repository.setLockAscendant(it) } },
+                    onColoredZodiacBandsChanged = { scope.launch { repository.setColoredZodiacBands(it) } },
                     onZodiacOuterChanged = { scope.launch { repository.setZodiacOuterRadius(it) } },
                     onZodiacInnerChanged = { scope.launch { repository.setZodiacInnerRadius(it) } },
                     onHouseOuterChanged = { scope.launch { repository.setHouseOuterRadius(it) } },
                     onHouseInnerChanged = { scope.launch { repository.setHouseInnerRadius(it) } },
                     onBodyRingChanged = { scope.launch { repository.setBodyRingRadius(it) } },
+                    onAspectInnerChanged = { scope.launch { repository.setAspectInnerRadius(it) } },
                     onAspectThicknessChanged = { scope.launch { repository.setAspectLineThickness(it) } },
                     onAspectOpacityChanged = { scope.launch { repository.setAspectLineOpacity(it) } },
                     onMajorStyleChanged = { scope.launch { repository.setMajorAspectStyle(it) } },
                     onMinorStyleChanged = { scope.launch { repository.setMinorAspectStyle(it) } },
+                    onScaleWidthByOrbChanged = { scope.launch { repository.setScaleWidthByOrb(it) } },
+                    onWidthScaleOrbChanged = { scope.launch { repository.setWidthScaleOrb(it) } },
                 )
             }
         }

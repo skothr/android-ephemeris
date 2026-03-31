@@ -11,7 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import com.skothr.ephemeris.R
 import com.skothr.ephemeris.chart.models.CelestialBody
 import com.skothr.ephemeris.chart.models.ZodiacSign
 import com.skothr.ephemeris.settings.components.SegmentedToggle
@@ -23,16 +26,23 @@ fun VisualTab(
     settings: VisualSettings,
     onThemeChanged: (AppTheme) -> Unit,
     onSymbolStyleChanged: (SymbolStyle) -> Unit,
+    onLockAscendantChanged: (Boolean) -> Unit,
+    onColoredZodiacBandsChanged: (Boolean) -> Unit,
     onZodiacOuterChanged: (Float) -> Unit,
     onZodiacInnerChanged: (Float) -> Unit,
     onHouseOuterChanged: (Float) -> Unit,
     onHouseInnerChanged: (Float) -> Unit,
     onBodyRingChanged: (Float) -> Unit,
+    onAspectInnerChanged: (Float) -> Unit,
     onAspectThicknessChanged: (Float) -> Unit,
     onAspectOpacityChanged: (Float) -> Unit,
     onMajorStyleChanged: (LineStyle) -> Unit,
     onMinorStyleChanged: (LineStyle) -> Unit,
+    onScaleWidthByOrbChanged: (Boolean) -> Unit,
+    onWidthScaleOrbChanged: (Float) -> Unit,
 ) {
+    val astroFontFamily = FontFamily(Font(R.font.astronomicon))
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,8 +50,8 @@ fun VisualTab(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        // Theme
-        SectionLabel("Theme")
+        // Chart Theme
+        SectionLabel("Chart Theme")
         SegmentedToggle(
             options = AppTheme.entries,
             selected = settings.theme,
@@ -70,16 +80,35 @@ fun VisualTab(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            val useAstro = settings.symbolStyle == SymbolStyle.ASTRO
             val previewSymbols = listOf(
-                ZodiacSign.ARIES.symbol, ZodiacSign.TAURUS.symbol,
-                ZodiacSign.GEMINI.symbol, ZodiacSign.CANCER.symbol,
-                CelestialBody.SUN.symbol, CelestialBody.MOON.symbol,
-                CelestialBody.MARS.symbol, CelestialBody.JUPITER.symbol,
+                if (useAstro) ZodiacSign.ARIES.astroSymbol else ZodiacSign.ARIES.symbol,
+                if (useAstro) ZodiacSign.TAURUS.astroSymbol else ZodiacSign.TAURUS.symbol,
+                if (useAstro) ZodiacSign.GEMINI.astroSymbol else ZodiacSign.GEMINI.symbol,
+                if (useAstro) ZodiacSign.CANCER.astroSymbol else ZodiacSign.CANCER.symbol,
+                if (useAstro) CelestialBody.SUN.astroSymbol else CelestialBody.SUN.symbol,
+                if (useAstro) CelestialBody.MOON.astroSymbol else CelestialBody.MOON.symbol,
+                if (useAstro) CelestialBody.MARS.astroSymbol else CelestialBody.MARS.symbol,
+                if (useAstro) CelestialBody.JUPITER.astroSymbol else CelestialBody.JUPITER.symbol,
             )
+            val fontFamily = if (useAstro) astroFontFamily else null
             previewSymbols.forEach { symbol ->
-                Text(symbol, fontSize = 24.sp)
+                Text(symbol, fontSize = 24.sp, fontFamily = fontFamily)
             }
         }
+
+        // Chart options
+        SectionLabel("Chart")
+        SettingsToggleRow(
+            label = "Lock ascendant to left",
+            checked = settings.lockAscendant,
+            onCheckedChange = onLockAscendantChanged,
+        )
+        SettingsToggleRow(
+            label = "Colored zodiac bands",
+            checked = settings.coloredZodiacBands,
+            onCheckedChange = onColoredZodiacBandsChanged,
+        )
 
         // Ring Proportions
         SectionLabel("Ring Proportions")
@@ -118,6 +147,13 @@ fun VisualTab(
             valueRange = 0.40f..0.70f,
             formatValue = { "${(it * 100).toInt()}%" },
         )
+        SettingsSlider(
+            label = "Aspect Inner",
+            value = settings.aspectInnerRadius,
+            onValueChange = onAspectInnerChanged,
+            valueRange = 0.0f..0.50f,
+            formatValue = { "${(it * 100).toInt()}%" },
+        )
 
         // Aspect Lines
         SectionLabel("Aspect Lines")
@@ -151,5 +187,19 @@ fun VisualTab(
             onSelected = onMinorStyleChanged,
             label = { it.displayName },
         )
+        SettingsToggleRow(
+            label = "Scale width by orb",
+            checked = settings.scaleWidthByOrb,
+            onCheckedChange = onScaleWidthByOrbChanged,
+        )
+        if (settings.scaleWidthByOrb) {
+            SettingsSlider(
+                label = "Width Scale Orb",
+                value = settings.widthScaleOrb,
+                onValueChange = onWidthScaleOrbChanged,
+                valueRange = 1.0f..15.0f,
+                formatValue = { "%.1f°".format(it) },
+            )
+        }
     }
 }
