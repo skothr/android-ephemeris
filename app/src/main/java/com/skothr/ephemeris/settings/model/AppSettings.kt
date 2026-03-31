@@ -49,15 +49,20 @@ data class DisplaySettings(
 data class VisualSettings(
     val theme: AppTheme = AppTheme.DARK,
     val symbolStyle: SymbolStyle = SymbolStyle.SYSTEM,
+    val lockAscendant: Boolean = false,
+    val coloredZodiacBands: Boolean = false,
     val zodiacOuterRadius: Float = 0.95f,
     val zodiacInnerRadius: Float = 0.82f,
     val houseOuterRadius: Float = 0.82f,
     val houseInnerRadius: Float = 0.68f,
     val bodyRingRadius: Float = 0.58f,
+    val aspectInnerRadius: Float = 0.10f,
     val aspectLineThickness: Float = 2.0f,
     val aspectLineOpacity: Float = 0.8f,
     val majorAspectStyle: LineStyle = LineStyle.SOLID,
     val minorAspectStyle: LineStyle = LineStyle.DASHED,
+    val scaleWidthByOrb: Boolean = false,
+    val widthScaleOrb: Float = 6.0f,
 )
 
 data class AppSettings(
