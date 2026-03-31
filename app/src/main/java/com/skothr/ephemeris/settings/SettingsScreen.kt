@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.skothr.ephemeris.settings.model.AppSettings
 import com.skothr.ephemeris.settings.tabs.CalculationTab
 import com.skothr.ephemeris.settings.tabs.DisplayTab
+import com.skothr.ephemeris.settings.tabs.AboutTab
 import com.skothr.ephemeris.settings.tabs.VisualTab
 import kotlinx.coroutines.launch
 
@@ -34,7 +35,7 @@ fun SettingsScreen(
         },
     ) { padding ->
         var selectedTab by remember { mutableIntStateOf(0) }
-        val tabs = listOf("Calculation", "Display", "Visual")
+        val tabs = listOf("Calculation", "Display", "Visual", "About")
 
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             TabRow(selectedTabIndex = selectedTab) {
@@ -57,6 +58,12 @@ fun SettingsScreen(
                     onHouseSystemChanged = { scope.launch { repository.setHouseSystem(it) } },
                     onSpeedChanged = { scope.launch { repository.setSpeedInLongitude(it) } },
                     onEquatorialChanged = { scope.launch { repository.setEquatorialCoordinates(it) } },
+                    onTruePositionChanged = { scope.launch { repository.setTruePosition(it) } },
+                    onNoGravDeflChanged = { scope.launch { repository.setNoGravitationalDeflection(it) } },
+                    onNoAberrationChanged = { scope.launch { repository.setNoAberration(it) } },
+                    onJ2000Changed = { scope.launch { repository.setJ2000Equinox(it) } },
+                    onNoNutationChanged = { scope.launch { repository.setNoNutation(it) } },
+                    onIcrsChanged = { scope.launch { repository.setIcrsFrame(it) } },
                 )
                 1 -> DisplayTab(
                     settings = settings.display,
@@ -83,6 +90,7 @@ fun SettingsScreen(
                     onScaleWidthByOrbChanged = { scope.launch { repository.setScaleWidthByOrb(it) } },
                     onWidthScaleOrbChanged = { scope.launch { repository.setWidthScaleOrb(it) } },
                 )
+                3 -> AboutTab()
             }
         }
     }

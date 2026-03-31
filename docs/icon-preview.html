@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ephemeris Icon Preview</title>
+<style>
+  body { background: #1a1a1a; color: #e0e0e0; font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+  h1 { font-weight: 300; margin-bottom: 8px; }
+  .subtitle { color: #888; margin-bottom: 40px; }
+  .previews { display: flex; gap: 48px; align-items: flex-end; flex-wrap: wrap; justify-content: center; }
+  .preview { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .preview label { color: #888; font-size: 13px; }
+  .icon-circle { border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<h1>Ephemeris Icon</h1>
+<p class="subtitle">Geometric zodiac wheel &middot; subtle element colors &middot; dark background</p>
+
+<div class="previews">
+
+  <!-- Full size -->
+  <div class="preview">
+    <div class="icon-circle" style="width:256px;height:256px;background:#121212;">
+      <svg viewBox="0 0 200 200" width="220" height="220">
+        <!-- Outer ring -->
+        <circle cx="100" cy="100" r="88" fill="none" stroke="#4A5578" stroke-width="2.2"/>
+        <!-- Inner ring -->
+        <circle cx="100" cy="100" r="68" fill="none" stroke="#4A5578" stroke-width="1.3" opacity="0.7"/>
+
+        <!-- 12 radial tick marks at sign boundaries (0°, 30°, 60°, ...) -->
+        <g stroke="#4A5578" stroke-width="1.2" opacity="0.55">
+          <line x1="100" y1="12" x2="100" y2="32"/>
+          <line x1="144" y1="16" x2="134" y2="34"/>
+          <line x1="176.2" y1="44" x2="158.9" y2="56"/>
+          <line x1="188" y1="100" x2="168" y2="100"/>
+          <line x1="176.2" y1="156" x2="158.9" y2="144"/>
+          <line x1="144" y1="184" x2="134" y2="166"/>
+          <line x1="100" y1="188" x2="100" y2="168"/>
+          <line x1="56" y1="184" x2="66" y2="166"/>
+          <line x1="23.8" y1="156" x2="41.1" y2="144"/>
+          <line x1="12" y1="100" x2="32" y2="100"/>
+          <line x1="23.8" y1="44" x2="41.1" y2="56"/>
+          <line x1="56" y1="16" x2="66" y2="34"/>
+        </g>
+
+        <!-- 12 element dots offset +15° (midpoint of each sign segment) -->
+        <!-- r=88 from center (100,100) -->
+        <circle cx="122.8" cy="15.0" r="3.5" fill="#A8656A"/>   <!-- Aries 15° fire -->
+        <circle cx="162.2" cy="37.8" r="3.5" fill="#5E8A68"/>   <!-- Taurus 45° earth -->
+        <circle cx="185.0" cy="77.2" r="3.5" fill="#9E8A5C"/>   <!-- Gemini 75° air -->
+        <circle cx="185.0" cy="122.8" r="3.5" fill="#5880A0"/>  <!-- Cancer 105° water -->
+        <circle cx="162.2" cy="162.2" r="3.5" fill="#A8656A"/>  <!-- Leo 135° fire -->
+        <circle cx="122.8" cy="185.0" r="3.5" fill="#5E8A68"/>  <!-- Virgo 165° earth -->
+        <circle cx="77.2" cy="185.0" r="3.5" fill="#9E8A5C"/>   <!-- Libra 195° air -->
+        <circle cx="37.8" cy="162.2" r="3.5" fill="#5880A0"/>   <!-- Scorpio 225° water -->
+        <circle cx="15.0" cy="122.8" r="3.5" fill="#A8656A"/>   <!-- Sag 255° fire -->
+        <circle cx="15.0" cy="77.2" r="3.5" fill="#5E8A68"/>    <!-- Cap 285° earth -->
+        <circle cx="37.8" cy="37.8" r="3.5" fill="#9E8A5C"/>    <!-- Aqua 315° air -->
+        <circle cx="77.2" cy="15.0" r="3.5" fill="#5880A0"/>    <!-- Pisces 345° water -->
+
+        <!-- Central sun glyph -->
+        <circle cx="100" cy="100" r="16" fill="none" stroke="#FFB300" stroke-width="2.2"/>
+        <circle cx="100" cy="100" r="3.5" fill="#FFB300"/>
+      </svg>
+    </div>
+    <label>256 &times; 256</label>
+  </div>
+
+  <!-- Medium -->
+  <div class="preview">
+    <div class="icon-circle" style="width:108px;height:108px;background:#121212;">
+      <svg viewBox="0 0 200 200" width="92" height="92">
+        <circle cx="100" cy="100" r="88" fill="none" stroke="#4A5578" stroke-width="2.2"/>
+        <circle cx="100" cy="100" r="68" fill="none" stroke="#4A5578" stroke-width="1.3" opacity="0.7"/>
+        <g stroke="#4A5578" stroke-width="1.2" opacity="0.55">
+          <line x1="100" y1="12" x2="100" y2="32"/>
+          <line x1="144" y1="16" x2="134" y2="34"/>
+          <line x1="176.2" y1="44" x2="158.9" y2="56"/>
+          <line x1="188" y1="100" x2="168" y2="100"/>
+          <line x1="176.2" y1="156" x2="158.9" y2="144"/>
+          <line x1="144" y1="184" x2="134" y2="166"/>
+          <line x1="100" y1="188" x2="100" y2="168"/>
+          <line x1="56" y1="184" x2="66" y2="166"/>
+          <line x1="23.8" y1="156" x2="41.1" y2="144"/>
+          <line x1="12" y1="100" x2="32" y2="100"/>
+          <line x1="23.8" y1="44" x2="41.1" y2="56"/>
+          <line x1="56" y1="16" x2="66" y2="34"/>
+        </g>
+        <circle cx="122.8" cy="15.0" r="5.5" fill="#A8656A"/>
+        <circle cx="162.2" cy="37.8" r="5.5" fill="#5E8A68"/>
+        <circle cx="185.0" cy="77.2" r="5.5" fill="#9E8A5C"/>
+        <circle cx="185.0" cy="122.8" r="5.5" fill="#5880A0"/>
+        <circle cx="162.2" cy="162.2" r="5.5" fill="#A8656A"/>
+        <circle cx="122.8" cy="185.0" r="5.5" fill="#5E8A68"/>
+        <circle cx="77.2" cy="185.0" r="5.5" fill="#9E8A5C"/>
+        <circle cx="37.8" cy="162.2" r="5.5" fill="#5880A0"/>
+        <circle cx="15.0" cy="122.8" r="5.5" fill="#A8656A"/>
+        <circle cx="15.0" cy="77.2" r="5.5" fill="#5E8A68"/>
+        <circle cx="37.8" cy="37.8" r="5.5" fill="#9E8A5C"/>
+        <circle cx="77.2" cy="15.0" r="5.5" fill="#5880A0"/>
+        <circle cx="100" cy="100" r="18" fill="none" stroke="#FFB300" stroke-width="2.8"/>
+        <circle cx="100" cy="100" r="4.5" fill="#FFB300"/>
+      </svg>
+    </div>
+    <label>108 &times; 108 (xxxhdpi)</label>
+  </div>
+
+  <!-- Small -->
+  <div class="preview">
+    <div class="icon-circle" style="width:48px;height:48px;background:#121212;">
+      <svg viewBox="0 0 200 200" width="42" height="42">
+        <circle cx="100" cy="100" r="88" fill="none" stroke="#4A5578" stroke-width="3.5"/>
+        <circle cx="100" cy="100" r="68" fill="none" stroke="#4A5578" stroke-width="2" opacity="0.7"/>
+        <g stroke="#4A5578" stroke-width="2" opacity="0.55">
+          <line x1="100" y1="12" x2="100" y2="32"/>
+          <line x1="144" y1="16" x2="134" y2="34"/>
+          <line x1="176.2" y1="44" x2="158.9" y2="56"/>
+          <line x1="188" y1="100" x2="168" y2="100"/>
+          <line x1="176.2" y1="156" x2="158.9" y2="144"/>
+          <line x1="144" y1="184" x2="134" y2="166"/>
+          <line x1="100" y1="188" x2="100" y2="168"/>
+          <line x1="56" y1="184" x2="66" y2="166"/>
+          <line x1="23.8" y1="156" x2="41.1" y2="144"/>
+          <line x1="12" y1="100" x2="32" y2="100"/>
+          <line x1="23.8" y1="44" x2="41.1" y2="56"/>
+          <line x1="56" y1="16" x2="66" y2="34"/>
+        </g>
+        <circle cx="122.8" cy="15.0" r="8" fill="#A8656A"/>
+        <circle cx="162.2" cy="37.8" r="8" fill="#5E8A68"/>
+        <circle cx="185.0" cy="77.2" r="8" fill="#9E8A5C"/>
+        <circle cx="185.0" cy="122.8" r="8" fill="#5880A0"/>
+        <circle cx="162.2" cy="162.2" r="8" fill="#A8656A"/>
+        <circle cx="122.8" cy="185.0" r="8" fill="#5E8A68"/>
+        <circle cx="77.2" cy="185.0" r="8" fill="#9E8A5C"/>
+        <circle cx="37.8" cy="162.2" r="8" fill="#5880A0"/>
+        <circle cx="15.0" cy="122.8" r="8" fill="#A8656A"/>
+        <circle cx="15.0" cy="77.2" r="8" fill="#5E8A68"/>
+        <circle cx="37.8" cy="37.8" r="8" fill="#9E8A5C"/>
+        <circle cx="77.2" cy="15.0" r="8" fill="#5880A0"/>
+        <circle cx="100" cy="100" r="22" fill="none" stroke="#FFB300" stroke-width="4.5"/>
+        <circle cx="100" cy="100" r="6" fill="#FFB300"/>
+      </svg>
+    </div>
+    <label>48 &times; 48 (mdpi)</label>
+  </div>
+
+</div>
+
+</body>
+</html>
