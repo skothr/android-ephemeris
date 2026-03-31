@@ -1,5 +1,6 @@
 package com.skothr.ephemeris.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 import com.skothr.ephemeris.settings.SettingsRepository
 import com.skothr.ephemeris.settings.SettingsScreen
 import com.skothr.ephemeris.settings.model.AppTheme
+import com.skothr.ephemeris.ui.chart.ChartColors
 import com.skothr.ephemeris.ui.chart.ChartWheel
 import com.skothr.ephemeris.ui.controls.DateTimeControls
 import com.skothr.ephemeris.ui.controls.LocationControls
@@ -31,7 +33,7 @@ fun MainScreen(viewModel: ChartViewModel, settingsRepository: SettingsRepository
 
     var showSettings by remember { mutableStateOf(false) }
 
-    EphemerisTheme(darkTheme = settings.visual.theme == AppTheme.DARK) {
+    EphemerisTheme(darkTheme = true) {
         if (showSettings) {
             SettingsScreen(
                 settings = settings,
@@ -41,7 +43,7 @@ fun MainScreen(viewModel: ChartViewModel, settingsRepository: SettingsRepository
         } else {
             Surface(
                 modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background,
+                color = ChartColors.appBackground(settings.visual.theme),
             ) {
                 val scrollState = rememberScrollState()
                 val coroutineScope = rememberCoroutineScope()

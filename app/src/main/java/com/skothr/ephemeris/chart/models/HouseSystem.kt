@@ -2,7 +2,25 @@ package com.skothr.ephemeris.chart.models
 
 enum class HouseSystem(val displayName: String, val swissEphCode: Char) {
     PLACIDUS("Placidus", 'P'),
-    WHOLE_SIGN("Whole Sign", 'W'),
+    KOCH("Koch", 'K'),
+    REGIOMONTANUS("Regiomontanus", 'R'),
+    CAMPANUS("Campanus", 'C'),
     EQUAL("Equal", 'E'),
-    KOCH("Koch", 'K');
+    WHOLE_SIGN("Whole Sign", 'W'),
+    EQUAL_MC("Equal (MC)", 'D'),
+    EQUAL_VEHLOW("Vehlow Equal", 'V'),
+    PORPHYRY("Porphyry", 'O'),
+    MORINUS("Morinus", 'M'),
+    ALCABITIUS("Alcabitius", 'B'),
+    TOPOCENTRIC("Polich/Page (Topocentric)", 'T'),
+    KRUSINSKI("Krusinski-Pisa-Goelzer", 'U'),
+    SRIPATI("Sripati", 'S'),
+    MERIDIAN("Meridian/Axial", 'X'),
+    APC("APC", 'Y'),
+    CARTER("Carter Poli-Equatorial", 'F'),
+    GAUQUELIN("Gauquelin Sectors", 'G'),
+    SUNSHINE("Sunshine", 'I'),
+    PULLEN_SD("Pullen (Sinusoidal Delta)", 'L'),
+    PULLEN_SR("Pullen (Sinusoidal Ratio)", 'Q'),
+    EQUAL_ARIES("Equal (1=Aries)", 'N'),
 }

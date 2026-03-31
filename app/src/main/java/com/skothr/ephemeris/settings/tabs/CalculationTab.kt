@@ -23,6 +23,12 @@ fun CalculationTab(
     onHouseSystemChanged: (HouseSystem) -> Unit,
     onSpeedChanged: (Boolean) -> Unit,
     onEquatorialChanged: (Boolean) -> Unit,
+    onTruePositionChanged: (Boolean) -> Unit,
+    onNoGravDeflChanged: (Boolean) -> Unit,
+    onNoAberrationChanged: (Boolean) -> Unit,
+    onJ2000Changed: (Boolean) -> Unit,
+    onNoNutationChanged: (Boolean) -> Unit,
+    onIcrsChanged: (Boolean) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -89,6 +95,42 @@ fun CalculationTab(
             label = "Equatorial coordinates",
             checked = settings.equatorialCoordinates,
             onCheckedChange = onEquatorialChanged,
+        )
+
+        // Corrections
+        SectionLabel("Corrections")
+        SettingsToggleRow(
+            label = "True position",
+            checked = settings.truePosition,
+            onCheckedChange = onTruePositionChanged,
+        )
+        SettingsToggleRow(
+            label = "No gravitational deflection",
+            checked = settings.noGravitationalDeflection,
+            onCheckedChange = onNoGravDeflChanged,
+        )
+        SettingsToggleRow(
+            label = "No aberration",
+            checked = settings.noAberration,
+            onCheckedChange = onNoAberrationChanged,
+        )
+
+        // Reference Frame
+        SectionLabel("Reference Frame")
+        SettingsToggleRow(
+            label = "J2000 equinox",
+            checked = settings.j2000Equinox,
+            onCheckedChange = onJ2000Changed,
+        )
+        SettingsToggleRow(
+            label = "No nutation",
+            checked = settings.noNutation,
+            onCheckedChange = onNoNutationChanged,
+        )
+        SettingsToggleRow(
+            label = "ICRS frame",
+            checked = settings.icrsFrame,
+            onCheckedChange = onIcrsChanged,
         )
     }
 }

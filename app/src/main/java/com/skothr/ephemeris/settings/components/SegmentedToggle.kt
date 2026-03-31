@@ -6,7 +6,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun <T> SegmentedToggle(
@@ -23,6 +26,7 @@ fun <T> SegmentedToggle(
                 onClick = { onSelected(option) },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                         else MaterialTheme.colorScheme.surface,
@@ -35,7 +39,13 @@ fun <T> SegmentedToggle(
                     else MaterialTheme.colorScheme.outlineVariant,
                 ),
             ) {
-                Text(label(option))
+                Text(
+                    label(option),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = if (options.size > 2) 12.sp else 14.sp,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

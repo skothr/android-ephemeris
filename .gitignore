@@ -1,6 +1,29 @@
 # Signing
 keystore.properties
 *.jks
+*.keystore
+
+# IDE / Editor
+.idea/
+.vscode/
+*.iml
+
+# Shell / dotfiles
+.bash_profile
+.bashrc
+.profile
+.zprofile
+.zshrc
+.gitconfig
+.ripgreprc
+
+# Claude / MCP
+.claude/
+.mcp.json
+
+# Misc
+.gitmodules
+*.backup
 
 # Built application files
 *.apk

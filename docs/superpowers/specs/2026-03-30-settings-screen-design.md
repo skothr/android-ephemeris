@@ -230,3 +230,13 @@ New native functions needed:
 - Unit tests for settings data class defaults and serialization
 - UI tests for each tab rendering and interaction
 - Integration test: change a setting → verify chart recalculates with new parameters
+                                
+      158 -var flags = SEFLG_SPEED  // if speedInLongitude                                                                                                                                   
+      158 +var flags = 0                                                                                                                                                                     
+      159 +if (speedInLongitude) flags |= SEFLG_SPEED                                                                                                                                        
+      160  if (zodiacType == SIDEREAL) flags |= SEFLG_SIDEREAL                                                                                                                             
+      160 -if (nodeType == TRUE_NODE) flags |= SEFLG_TRUENODE (default in sweph, no flag needed for true)                                                                                    
+      161 +if (nodeType == TRUE_NODE) flags |= SEFLG_TRUENODE                                                                                                                              
+      162  if (center == HELIOCENTRIC) flags |= SEFLG_HELCTR                                                                                                                                 
+      163  if (center == TOPOCENTRIC) flags |= SEFLG_TOPOCTR                                                                                                                               
+      164  if (equatorialCoordinates) flags |= SEFLG_EQUATORIAL                                                                                                       

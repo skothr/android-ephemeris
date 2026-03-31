@@ -23,6 +23,12 @@ class SettingsRepository(private val context: Context) {
     private val houseSystemKey = stringPreferencesKey("calc_house_system")
     private val speedKey = booleanPreferencesKey("calc_speed")
     private val equatorialKey = booleanPreferencesKey("calc_equatorial")
+    private val truePositionKey = booleanPreferencesKey("calc_true_position")
+    private val noGravDeflKey = booleanPreferencesKey("calc_no_grav_deflection")
+    private val noAberrationKey = booleanPreferencesKey("calc_no_aberration")
+    private val j2000Key = booleanPreferencesKey("calc_j2000")
+    private val noNutationKey = booleanPreferencesKey("calc_no_nutation")
+    private val icrsKey = booleanPreferencesKey("calc_icrs")
 
     // Display keys (bodies and aspects stored by name)
     private fun bodyKey(body: CelestialBody) = booleanPreferencesKey("display_body_${body.name}")
@@ -58,6 +64,12 @@ class SettingsRepository(private val context: Context) {
                 houseSystem = prefs[houseSystemKey]?.let { enumValueOf<HouseSystem>(it) } ?: defaults.calculation.houseSystem,
                 speedInLongitude = prefs[speedKey] ?: defaults.calculation.speedInLongitude,
                 equatorialCoordinates = prefs[equatorialKey] ?: defaults.calculation.equatorialCoordinates,
+                truePosition = prefs[truePositionKey] ?: defaults.calculation.truePosition,
+                noGravitationalDeflection = prefs[noGravDeflKey] ?: defaults.calculation.noGravitationalDeflection,
+                noAberration = prefs[noAberrationKey] ?: defaults.calculation.noAberration,
+                j2000Equinox = prefs[j2000Key] ?: defaults.calculation.j2000Equinox,
+                noNutation = prefs[noNutationKey] ?: defaults.calculation.noNutation,
+                icrsFrame = prefs[icrsKey] ?: defaults.calculation.icrsFrame,
             ),
             display = DisplaySettings(
                 enabledBodies = CelestialBody.entries.filter { body ->
@@ -99,6 +111,12 @@ class SettingsRepository(private val context: Context) {
     suspend fun setHouseSystem(value: HouseSystem) = context.dataStore.edit { it[houseSystemKey] = value.name }
     suspend fun setSpeedInLongitude(value: Boolean) = context.dataStore.edit { it[speedKey] = value }
     suspend fun setEquatorialCoordinates(value: Boolean) = context.dataStore.edit { it[equatorialKey] = value }
+    suspend fun setTruePosition(value: Boolean) = context.dataStore.edit { it[truePositionKey] = value }
+    suspend fun setNoGravitationalDeflection(value: Boolean) = context.dataStore.edit { it[noGravDeflKey] = value }
+    suspend fun setNoAberration(value: Boolean) = context.dataStore.edit { it[noAberrationKey] = value }
+    suspend fun setJ2000Equinox(value: Boolean) = context.dataStore.edit { it[j2000Key] = value }
+    suspend fun setNoNutation(value: Boolean) = context.dataStore.edit { it[noNutationKey] = value }
+    suspend fun setIcrsFrame(value: Boolean) = context.dataStore.edit { it[icrsKey] = value }
 
     // Display setters
     suspend fun setBodyEnabled(body: CelestialBody, enabled: Boolean) =
