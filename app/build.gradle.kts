@@ -22,7 +22,7 @@ android {
                 storeFile = file(keystoreProperties["storeFile"] as String)
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["storePassword"] as String
+                keyPassword = keystoreProperties.getProperty("keyPassword", keystoreProperties["storePassword"] as String)
             }
         }
     }
