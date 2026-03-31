@@ -32,15 +32,20 @@ class SettingsRepository(private val context: Context) {
     // Visual keys
     private val themeKey = stringPreferencesKey("visual_theme")
     private val symbolStyleKey = stringPreferencesKey("visual_symbol_style")
+    private val lockAscendantKey = booleanPreferencesKey("visual_lock_ascendant")
+    private val coloredZodiacBandsKey = booleanPreferencesKey("visual_colored_zodiac_bands")
     private val zodiacOuterKey = floatPreferencesKey("visual_zodiac_outer")
     private val zodiacInnerKey = floatPreferencesKey("visual_zodiac_inner")
     private val houseOuterKey = floatPreferencesKey("visual_house_outer")
     private val houseInnerKey = floatPreferencesKey("visual_house_inner")
     private val bodyRingKey = floatPreferencesKey("visual_body_ring")
+    private val aspectInnerKey = floatPreferencesKey("visual_aspect_inner")
     private val aspectThicknessKey = floatPreferencesKey("visual_aspect_thickness")
     private val aspectOpacityKey = floatPreferencesKey("visual_aspect_opacity")
     private val majorStyleKey = stringPreferencesKey("visual_major_style")
     private val minorStyleKey = stringPreferencesKey("visual_minor_style")
+    private val scaleWidthByOrbKey = booleanPreferencesKey("visual_aspect_width_scale")
+    private val widthScaleOrbKey = floatPreferencesKey("visual_aspect_width_scale_orb")
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { prefs ->
         val defaults = AppSettings()
@@ -68,15 +73,20 @@ class SettingsRepository(private val context: Context) {
             visual = VisualSettings(
                 theme = prefs[themeKey]?.let { enumValueOf<AppTheme>(it) } ?: defaults.visual.theme,
                 symbolStyle = prefs[symbolStyleKey]?.let { enumValueOf<SymbolStyle>(it) } ?: defaults.visual.symbolStyle,
+                lockAscendant = prefs[lockAscendantKey] ?: defaults.visual.lockAscendant,
+                coloredZodiacBands = prefs[coloredZodiacBandsKey] ?: defaults.visual.coloredZodiacBands,
                 zodiacOuterRadius = prefs[zodiacOuterKey] ?: defaults.visual.zodiacOuterRadius,
                 zodiacInnerRadius = prefs[zodiacInnerKey] ?: defaults.visual.zodiacInnerRadius,
                 houseOuterRadius = prefs[houseOuterKey] ?: defaults.visual.houseOuterRadius,
                 houseInnerRadius = prefs[houseInnerKey] ?: defaults.visual.houseInnerRadius,
                 bodyRingRadius = prefs[bodyRingKey] ?: defaults.visual.bodyRingRadius,
+                aspectInnerRadius = prefs[aspectInnerKey] ?: defaults.visual.aspectInnerRadius,
                 aspectLineThickness = prefs[aspectThicknessKey] ?: defaults.visual.aspectLineThickness,
                 aspectLineOpacity = prefs[aspectOpacityKey] ?: defaults.visual.aspectLineOpacity,
                 majorAspectStyle = prefs[majorStyleKey]?.let { enumValueOf<LineStyle>(it) } ?: defaults.visual.majorAspectStyle,
                 minorAspectStyle = prefs[minorStyleKey]?.let { enumValueOf<LineStyle>(it) } ?: defaults.visual.minorAspectStyle,
+                scaleWidthByOrb = prefs[scaleWidthByOrbKey] ?: defaults.visual.scaleWidthByOrb,
+                widthScaleOrb = prefs[widthScaleOrbKey] ?: defaults.visual.widthScaleOrb,
             ),
         )
     }
@@ -101,13 +111,18 @@ class SettingsRepository(private val context: Context) {
     // Visual setters
     suspend fun setTheme(value: AppTheme) = context.dataStore.edit { it[themeKey] = value.name }
     suspend fun setSymbolStyle(value: SymbolStyle) = context.dataStore.edit { it[symbolStyleKey] = value.name }
+    suspend fun setLockAscendant(value: Boolean) = context.dataStore.edit { it[lockAscendantKey] = value }
+    suspend fun setColoredZodiacBands(value: Boolean) = context.dataStore.edit { it[coloredZodiacBandsKey] = value }
     suspend fun setZodiacOuterRadius(value: Float) = context.dataStore.edit { it[zodiacOuterKey] = value }
     suspend fun setZodiacInnerRadius(value: Float) = context.dataStore.edit { it[zodiacInnerKey] = value }
     suspend fun setHouseOuterRadius(value: Float) = context.dataStore.edit { it[houseOuterKey] = value }
     suspend fun setHouseInnerRadius(value: Float) = context.dataStore.edit { it[houseInnerKey] = value }
     suspend fun setBodyRingRadius(value: Float) = context.dataStore.edit { it[bodyRingKey] = value }
+    suspend fun setAspectInnerRadius(value: Float) = context.dataStore.edit { it[aspectInnerKey] = value }
     suspend fun setAspectLineThickness(value: Float) = context.dataStore.edit { it[aspectThicknessKey] = value }
     suspend fun setAspectLineOpacity(value: Float) = context.dataStore.edit { it[aspectOpacityKey] = value }
     suspend fun setMajorAspectStyle(value: LineStyle) = context.dataStore.edit { it[majorStyleKey] = value.name }
     suspend fun setMinorAspectStyle(value: LineStyle) = context.dataStore.edit { it[minorStyleKey] = value.name }
+    suspend fun setScaleWidthByOrb(value: Boolean) = context.dataStore.edit { it[scaleWidthByOrbKey] = value }
+    suspend fun setWidthScaleOrb(value: Float) = context.dataStore.edit { it[widthScaleOrbKey] = value }
 }
